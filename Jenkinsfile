@@ -7,11 +7,9 @@ pipeline {
     }
 
     environment {
-        // Change these to match your own Docker Hub / registry account
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials') // Jenkins credential ID (username/password)
-        DOCKER_IMAGE = "syedmateenmadni/ott-platform"
-        IMAGE_TAG              = "${env.BUILD_NUMBER}"
-    }
+    DOCKER_IMAGE = "ott-platform"
+    IMAGE_TAG = "${env.BUILD_NUMBER}"
+}
 
     options {
         timestamps()
@@ -65,14 +63,7 @@ pipeline {
             }
         }
 
-        stage('Docker Push') {
-            steps {
-                echo 'Pushing Docker image to registry...'
-                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
-                sh "docker push ${DOCKER_IMAGE}:${IMAGE_TAG}"
-                sh "docker push ${DOCKER_IMAGE}:latest"
-            }
-        }
+        
 
         stage('Deploy') {
             steps {
@@ -84,14 +75,14 @@ pipeline {
     }
 
     post {
-        success {
-            echo 'Pipeline completed successfully!'
-        }
-        failure {
-            echo 'Pipeline failed. Check the logs above.'
-        }
-        always {
-            sh 'docker logout || true'
-        }
+    success {
+        echo 'Pipeline completed successfully!'
     }
+    failure {
+        echo 'Pipeline failed. Check the logs above.'
+    }
+    always {
+        echo 'Pipeline finished'
+    }
+}
 }
