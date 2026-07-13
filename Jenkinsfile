@@ -66,12 +66,13 @@ pipeline {
         
 
         stage('Deploy') {
-            steps {
-                echo 'Deploying with docker-compose...'
-                sh 'docker compose down || true'
-                sh 'docker compose up -d --build'
-            }
-        }
+    steps {
+        echo 'Deploying with docker-compose...'
+        sh 'docker compose down -v || true'
+        sh 'docker rm -f ott-mysql ott-platform-app || true'
+        sh 'docker compose up -d'
+    }
+}
     }
 
     post {
